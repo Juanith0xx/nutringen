@@ -1,36 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HiMenu, HiX, HiChevronRight } from 'react-icons/hi';
-import { FiUsers, FiMail } from 'react-icons/fi';
+import { FiUsers, FiMail, FiBook } from 'react-icons/fi';
 import { FaDog, FaPiggyBank, FaFeatherAlt, FaWhatsapp } from 'react-icons/fa';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const [hoveredMenu, setHoveredMenu] = useState(null); // controla el menú activo
+  const [hoveredMenu, setHoveredMenu] = useState(null);
 
   const links = [
-    {
-      name: 'Nosotros',
-      icon: <FiUsers />,
-      submenu: [{ name: 'Equipo', href: '#equipo' }],
-    },
-    {
-      name: 'Aves',
-      icon: <FaFeatherAlt />,
-      submenu: [
-        { name: 'Nutrición', href: '#aves-nutricion' },
-        { name: 'Biológicos', href: '#aves-biologicos' },
-      ],
-    },
-    {
-      name: 'Cerdos',
-      icon: <FaPiggyBank />,
-      submenu: [
-        { name: 'Nutrición Cerdos', href: '#cerdos-nutricion' },
-        { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' },
-      ],
-    },
+    { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' }] },
+    { name: 'Aves', icon: <FaFeatherAlt />, submenu: [{ name: 'Nutrición', href: '#aves-nutricion' }, { name: 'Biológicos', href: '#aves-biologicos' }] },
+    { name: 'Cerdos', icon: <FaPiggyBank />, submenu: [{ name: 'Nutrición Cerdos', href: '#cerdos-nutricion' }, { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' }] },
     { name: 'Mascotas', icon: <FaDog />, href: '#mascotas' },
+    { name: 'Blog', href: '/blog', iconMobile: <FiBook /> }, // icono solo en mobile
     { name: 'Contacto', href: '/contacto', icon: <FiMail />, isButton: true },
   ];
 
@@ -73,21 +56,15 @@ const Navbar = () => {
                     <button className="flex items-center gap-1 text-[#2E7D32] text-xl md:text-2xl font-[Nunito Sans] hover:text-[#007A33] font-bold transition-colors duration-300">
                       {link.name}
                       <HiChevronRight
-                        className={`transform transition-transform duration-300 ${
-                          hoveredMenu === link.name ? 'rotate-90' : ''
-                        } text-[#2E7D32]`}
+                        className={`transform transition-transform duration-300 ${hoveredMenu === link.name ? 'rotate-90' : ''} text-[#2E7D32]`}
                         size={18}
                       />
                     </button>
-
-                    {/* Submenu fijo */}
                     <div
-                      className={`absolute top-full left-0 mt-4 w-60 bg-white  shadow-lg z-50 transition-opacity duration-300 ${
-                        hoveredMenu === link.name ? 'opacity-100 visible' : 'opacity-0 invisible'
-                      }`}
+                      className={`absolute top-full left-0 mt-4 w-60 bg-white shadow-lg z-50 transition-opacity duration-300 ${hoveredMenu === link.name ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
                     >
                       <ul>
-                        {link.submenu.map((sub) => (
+                        {link.submenu?.map((sub) => (
                           <li key={sub.name}>
                             <a
                               href={sub.href}
@@ -102,14 +79,13 @@ const Navbar = () => {
                     </div>
                   </div>
                 ) : (
-                  <a
+                  <Link
                     key={link.name}
-                    href={link.href}
-                    onClick={(e) => handleScroll(e, link.href)}
+                    to={link.href}
                     className="text-[#2E7D32] text-xl md:text-2xl font-[Nunito Sans] hover:text-[#007A33] font-bold transition-colors duration-300"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 )
               )}
 
@@ -117,14 +93,13 @@ const Navbar = () => {
             {links
               .filter((link) => link.isButton)
               .map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleScroll(e, link.href)}
+                  to={link.href}
                   className="bg-[#84BD00] text-white px-10 py-2 rounded-lg shadow-md font-bold transform transition duration-300 hover:bg-[#007A33] hover:-translate-y-1 ml-6"
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
           </div>
         </nav>
@@ -162,7 +137,7 @@ const Navbar = () => {
                     {link.name}
                   </span>
                   <ul className="ml-6 space-y-2">
-                    {link.submenu.map((sub) => (
+                    {link.submenu?.map((sub) => (
                       <li key={sub.name}>
                         <a
                           href={sub.href}
@@ -177,14 +152,15 @@ const Navbar = () => {
                 </li>
               ) : (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleScroll(e, link.href)}
+                  <Link
+                    to={link.href}
                     className="flex items-center text-[#2E7D32] hover:text-[#f3993e] text-lg font-medium transition-colors duration-200"
+                    onClick={() => setOpen(false)}
                   >
-                    {link.icon && <span className="mr-3">{link.icon}</span>}
+                    {/* ⚡ Icono mobile si existe, sino icono desktop */}
+                    {link.iconMobile ? <span className="mr-3">{link.iconMobile}</span> : link.icon && <span className="mr-3">{link.icon}</span>}
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               )
             )}
@@ -194,14 +170,14 @@ const Navbar = () => {
             .filter((link) => link.isButton)
             .map((link) => (
               <li key={link.name}>
-                <a
-                  href={link.href}
-                  onClick={(e) => handleScroll(e, link.href)}
+                <Link
+                  to={link.href}
                   className="flex items-center justify-center bg-[#84BD00] text-white px-4 py-2 rounded-lg shadow-md font-bold transition hover:bg-[#e68932]"
+                  onClick={() => setOpen(false)}
                 >
                   {link.icon && <span className="mr-3">{link.icon}</span>}
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
 

@@ -1,15 +1,18 @@
-import { useState } from 'react'
-import Navbar from './Components/Navbar'
-import './App.css'
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./Components/Navbar";
+import Blog from "./pages/Blog";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <Navbar />  
+      <Navbar />
+      <Routes>
+        {/* Ruta blog */}
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
