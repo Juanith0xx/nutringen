@@ -2,20 +2,22 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HiMenu, HiX, HiChevronRight } from 'react-icons/hi';
 import { FiUsers, FiMail, FiBook } from 'react-icons/fi';
-import { FaDog, FaPiggyBank, FaFeatherAlt, FaWhatsapp } from 'react-icons/fa';
+import { FaDog, FaPiggyBank, FaFeatherAlt, FaWhatsapp, FaMapMarkerAlt } from 'react-icons/fa';
+
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState(null);
 
-  const links = [
-    { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' }] },
-    { name: 'Aves', icon: <FaFeatherAlt />, submenu: [{ name: 'Nutrición', href: '#aves-nutricion' }, { name: 'Biológicos', href: '#aves-biologicos' }] },
-    { name: 'Cerdos', icon: <FaPiggyBank />, submenu: [{ name: 'Nutrición Cerdos', href: '#cerdos-nutricion' }, { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' }] },
-    { name: 'Mascotas', icon: <FaDog />, href: '#mascotas' },
-    { name: 'Blog', href: '/blog', iconMobile: <FiBook /> }, // icono solo en mobile
-    { name: 'Contacto', href: '/contacto', icon: <FiMail />, isButton: true },
-  ];
+ const links = [
+  { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' }] },
+  { name: 'Aves', icon: <FaFeatherAlt />, submenu: [{ name: 'Nutrición', href: '#aves-nutricion' }, { name: 'Biológicos', href: '#aves-biologicos' }] },
+  { name: 'Cerdos', icon: <FaPiggyBank />, submenu: [{ name: 'Nutrición Cerdos', href: '#cerdos-nutricion' }, { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' }] },
+  { name: 'Mascotas', icon: <FaDog />, href: '#mascotas' },
+  { name: 'Puntos de Venta', href: '/puntos-venta', iconMobile: <FaMapMarkerAlt /> }, // 🔥 nuevo
+  { name: 'Blog', href: '/blog', iconMobile: <FiBook /> },
+  { name: 'Contacto', href: '/contacto', icon: <FiMail />, isButton: true },
+];
 
   const handleScroll = (e, href) => {
     if (href.startsWith('#')) {
@@ -53,7 +55,7 @@ const Navbar = () => {
                     onMouseEnter={() => setHoveredMenu(link.name)}
                     onMouseLeave={() => setHoveredMenu(null)}
                   >
-                    <button className="flex items-center gap-1 text-[#2E7D32] text-xl md:text-2xl font-[Nunito Sans] hover:text-[#007A33] font-bold transition-colors duration-300">
+                    <button className="flex items-center gap-1 text-[#2E7D32] !text-base md:text-2xl font-[Nunito Sans] hover:text-[#007A33] font-medium transition-colors duration-300">
                       {link.name}
                       <HiChevronRight
                         className={`transform transition-transform duration-300 ${hoveredMenu === link.name ? 'rotate-90' : ''} text-[#2E7D32]`}
@@ -82,7 +84,7 @@ const Navbar = () => {
                   <Link
                     key={link.name}
                     to={link.href}
-                    className="text-[#2E7D32] text-xl md:text-2xl font-[Nunito Sans] hover:text-[#007A33] font-bold transition-colors duration-300"
+                    className="text-[#2E7D32] text-base md:text-lg font-[Nunito Sans] hover:text-[#007A33] font-semibold transition-colors duration-300"
                   >
                     {link.name}
                   </Link>
