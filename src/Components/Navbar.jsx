@@ -10,11 +10,11 @@ const Navbar = () => {
   const [hoveredMenu, setHoveredMenu] = useState(null);
 
  const links = [
-  { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' }] },
+  { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' },{ name: 'Propósito', href: '#proposito' },{ name: 'Sostenibilidad', href: '#sostenibilidad' }] },
   { name: 'Aves', icon: <FaFeatherAlt />, submenu: [{ name: 'Nutrición', href: '#aves-nutricion' }, { name: 'Biológicos', href: '#aves-biologicos' }] },
   { name: 'Cerdos', icon: <FaPiggyBank />, submenu: [{ name: 'Nutrición Cerdos', href: '#cerdos-nutricion' }, { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' }] },
   { name: 'Mascotas', icon: <FaDog />, href: '#mascotas' },
-  { name: 'Puntos de Venta', href: '/puntos-venta', iconMobile: <FaMapMarkerAlt /> }, // 🔥 nuevo
+  { name: 'Puntos de Venta', href: '/puntos-venta', iconMobile: <FaMapMarkerAlt /> },
   { name: 'Blog', href: '/blog', iconMobile: <FiBook /> },
   { name: 'Contacto', href: '/contacto', icon: <FiMail />, isButton: true },
 ];
@@ -71,7 +71,7 @@ const Navbar = () => {
                             <a
                               href={sub.href}
                               onClick={(e) => handleScroll(e, sub.href)}
-                              className="block px-4 py-2 text-base font-medium text-[#2E7D32] hover:bg-[#007A33] hover:text-white rounded-md transition-all duration-300"
+                              className="block px-4 py-2 !text-base font-medium text-[#2E7D32] hover:bg-[#007A33] hover:text-white rounded-md transition-all duration-300"
                             >
                               {sub.name}
                             </a>
@@ -84,7 +84,7 @@ const Navbar = () => {
                   <Link
                     key={link.name}
                     to={link.href}
-                    className="text-[#2E7D32] text-base md:text-lg font-[Nunito Sans] hover:text-[#007A33] font-semibold transition-colors duration-300"
+                    className="text-[#2E7D32] !text-base md:text-lg font-[Nunito Sans] hover:text-[#007A33] font-semibold transition-colors duration-300"
                   >
                     {link.name}
                   </Link>

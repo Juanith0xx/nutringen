@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        nunito: ['"Nunito Sans"', 'sans-serif'], // 👈 tu fuente personalizada
+        nunito: ['"Nunito"', 'sans-serif'], // 👈 tu fuente personalizada
       },
     },
   },
