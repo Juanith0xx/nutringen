@@ -22,7 +22,9 @@ export default function PuntoDeVenta() {
 
   // 🔹 Traer datos desde el backend
   useEffect(() => {
-    fetch("http://localhost:5000/api/stores") // Cambia a tu URL de producción si despliegas
+    fetch("https://backend-nutringen.onrender.com/api/stores") // URL de remder (Servicio desplegado de backend)
+
+    /*("http://localhost:5000/api/stores")*/ // URL de forma Local 
       .then((res) => res.json())
       .then((data) => setStores(data))
       .catch((err) => console.error("Error cargando sucursales:", err));
