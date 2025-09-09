@@ -1,23 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HiMenu, HiX, HiChevronRight } from 'react-icons/hi';
-import { FiUsers, FiMail, FiBook } from 'react-icons/fi';
+import { FiUsers, FiMail } from 'react-icons/fi';
 import { FaDog, FaPiggyBank, FaFeatherAlt, FaWhatsapp, FaMapMarkerAlt } from 'react-icons/fa';
-
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState(null);
+  const [activeSubmenu, setActiveSubmenu] = useState(null);
 
- const links = [
-  { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' },{ name: 'Propósito', href: '#proposito' },{ name: 'Sostenibilidad', href: '#sostenibilidad' }] },
-  { name: 'Aves', icon: <FaFeatherAlt />, submenu: [{ name: 'Nutrición', href: '#aves-nutricion' }, { name: 'Biológicos', href: '#aves-biologicos' }] },
-  { name: 'Cerdos', icon: <FaPiggyBank />, submenu: [{ name: 'Nutrición Cerdos', href: '#cerdos-nutricion' }, { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' }] },
-  { name: 'Mascotas', icon: <FaDog />, href: '#mascotas' },
-  { name: 'Puntos de Venta', href: '/puntos-venta', iconMobile: <FaMapMarkerAlt /> },
-  { name: 'Blog', href: '/blog', iconMobile: <FiBook /> },
-  { name: 'Contacto', href: '/contacto', icon: <FiMail />, isButton: true },
-];
+  const links = [
+    { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' }, { name: 'Propósito', href: '#proposito' }, { name: 'Sostenibilidad', href: '#sostenibilidad' }] },
+    { name: 'Aves', icon: <FaFeatherAlt />, submenu: [{ name: 'Nutrición', href: '#aves-nutricion' }, { name: 'Biológicos', href: '#aves-biologicos' }] },
+    { name: 'Cerdos', icon: <FaPiggyBank />, submenu: [{ name: 'Nutrición Cerdos', href: '#cerdos-nutricion' }, { name: 'Farmacéutica Cerdos', href: '#cerdos-biologicos' }] },
+    {
+      name: 'Perros y Gatos', icon: <FaDog />, submenu: [
+        { name: 'Gerólamo', href: '#gerolamo' },
+        { name: 'Biofresh', href: '#biofresh' },
+        { name: 'Three Chile', href: '#threechile' },
+        { name: 'Guabi Natural', href: '#guabinatural' },
+        { name: 'Gran Plus', href: '#granplus' },
+      ]
+    },
+    { name: 'Puntos de Venta', href: '/puntos-venta', iconMobile: <FaMapMarkerAlt /> },
+    { name: 'Contacto', href: '/contacto', icon: <FiMail />, isButton: true },
+  ];
 
   const handleScroll = (e, href) => {
     if (href.startsWith('#')) {
@@ -117,9 +124,7 @@ const Navbar = () => {
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-xl z-50 transform transition-transform duration-500 ease-in-out ${
-          open ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-xl z-50 transform transition-transform duration-500 ease-in-out ${open ? 'translate-x-0' : 'translate-x-full'}`}
       >
         <div className="flex items-center justify-between p-4 border-b">
           <span className="text-xl font-bold text-[#84BD00]">Menú</span>
@@ -128,7 +133,8 @@ const Navbar = () => {
           </button>
         </div>
 
-        <ul className="flex flex-col px-4 pt-6 space-y-4">
+        {/* Contenedor scrollable */}
+        <ul className="flex flex-col px-4 pt-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto">
           {links
             .filter((link) => !link.isButton)
             .map((link) =>
@@ -143,10 +149,20 @@ const Navbar = () => {
                       <li key={sub.name}>
                         <a
                           href={sub.href}
-                          onClick={(e) => handleScroll(e, sub.href)}
-                          className="text-[#444] hover:text-[#f3993e] text-base transition-colors duration-200"
+                          onClick={(e) => {
+                            handleScroll(e, sub.href);
+                            setActiveSubmenu(sub.name);
+                          }}
+                          className="relative inline-block text-[#444] hover:text-[#2E7D32] text-base transition-colors duration-200"
                         >
                           {sub.name}
+                          {/* Subrayado animado SOLO bajo el texto */}
+                          <span
+                            className={`absolute left-0 -bottom-1 h-[2px] bg-[#2E7D32] transform origin-left transition-transform duration-300 ${
+                              activeSubmenu === sub.name ? 'scale-x-100' : 'scale-x-0'
+                            }`}
+                            style={{ width: '100%' }}
+                          />
                         </a>
                       </li>
                     ))}
@@ -159,7 +175,6 @@ const Navbar = () => {
                     className="flex items-center text-[#2E7D32] hover:text-[#f3993e] text-lg font-medium transition-colors duration-200"
                     onClick={() => setOpen(false)}
                   >
-                    {/* ⚡ Icono mobile si existe, sino icono desktop */}
                     {link.iconMobile ? <span className="mr-3">{link.iconMobile}</span> : link.icon && <span className="mr-3">{link.icon}</span>}
                     {link.name}
                   </Link>
