@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { HiMenu, HiX, HiChevronRight } from 'react-icons/hi';
+import { HiMenu, HiX, HiChevronDown, HiChevronRight } from 'react-icons/hi';
 import { FiUsers, FiMail } from 'react-icons/fi';
 import { FaDog, FaPiggyBank, FaFeatherAlt, FaWhatsapp, FaMapMarkerAlt } from 'react-icons/fa';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const [hoveredMenu, setHoveredMenu] = useState(null);
   const [activeSubmenu, setActiveSubmenu] = useState(null);
+  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(null); // para abrir/cerrar submenus móviles
 
   const links = [
     { name: 'Nosotros', icon: <FiUsers />, submenu: [{ name: 'Equipo', href: '#equipo' }, { name: 'Propósito', href: '#proposito' }, { name: 'Sostenibilidad', href: '#sostenibilidad' }] },
@@ -39,6 +39,10 @@ const Navbar = () => {
     }
   };
 
+  const toggleMobileSubmenu = (name) => {
+    setMobileSubmenuOpen(prev => (prev === name ? null : name));
+  };
+
   return (
     <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-28">
@@ -56,29 +60,19 @@ const Navbar = () => {
               .filter((link) => !link.isButton)
               .map((link) =>
                 link.submenu ? (
-                  <div
-                    key={link.name}
-                    className="relative"
-                    onMouseEnter={() => setHoveredMenu(link.name)}
-                    onMouseLeave={() => setHoveredMenu(null)}
-                  >
+                  <div key={link.name} className="relative group">
                     <button className="flex items-center gap-1 text-[#2E7D32] !text-base md:text-2xl font-[Nunito Sans] hover:text-[#007A33] font-medium transition-colors duration-300">
                       {link.name}
-                      <HiChevronRight
-                        className={`transform transition-transform duration-300 ${hoveredMenu === link.name ? 'rotate-90' : ''} text-[#2E7D32]`}
-                        size={18}
-                      />
+                      <HiChevronRight className="text-[#2E7D32] ml-1" size={18} />
                     </button>
-                    <div
-                      className={`absolute top-full left-0 mt-4 w-60 bg-white shadow-lg z-50 transition-opacity duration-300 ${hoveredMenu === link.name ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-                    >
+                    <div className="absolute top-full left-0 mt-4 w-60 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300 z-50">
                       <ul>
-                        {link.submenu?.map((sub) => (
+                        {link.submenu.map((sub) => (
                           <li key={sub.name}>
                             <a
                               href={sub.href}
                               onClick={(e) => handleScroll(e, sub.href)}
-                              className="block px-4 py-2 !text-base font-medium text-[#2E7D32] hover:bg-[#007A33] hover:text-white rounded-md transition-all duration-300"
+                              className="block px-4 py-2 text-[#2E7D32] hover:bg-[#007A33] hover:text-white rounded-md transition-all duration-300"
                             >
                               {sub.name}
                             </a>
@@ -98,34 +92,26 @@ const Navbar = () => {
                 )
               )}
 
-            {/* Contact Button */}
-            {links
-              .filter((link) => link.isButton)
-              .map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  className="bg-[#84BD00] text-white px-10 py-2 rounded-lg shadow-md font-bold transform transition duration-300 hover:bg-[#007A33] hover:-translate-y-1 ml-6"
-                >
-                  {link.name}
-                </Link>
-              ))}
+            {links.filter((link) => link.isButton).map((link) => (
+              <Link
+                key={link.name}
+                to={link.href}
+                className="bg-[#84BD00] text-white px-10 py-2 rounded-lg shadow-md font-bold transform transition duration-300 hover:bg-[#007A33] hover:-translate-y-1 ml-6"
+              >
+                {link.name}
+              </Link>
+            ))}
           </div>
         </nav>
 
         {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-gray-700 focus:outline-none"
-          onClick={() => setOpen(!open)}
-        >
+        <button className="md:hidden text-gray-700 focus:outline-none" onClick={() => setOpen(!open)}>
           {open ? <HiX size={28} /> : <HiMenu size={28} />}
         </button>
       </div>
 
       {/* Mobile Sidebar */}
-      <div
-        className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-xl z-50 transform transition-transform duration-500 ease-in-out ${open ? 'translate-x-0' : 'translate-x-full'}`}
-      >
+      <div className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-xl z-50 transform transition-transform duration-500 ease-in-out ${open ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex items-center justify-between p-4 border-b">
           <span className="text-xl font-bold text-[#84BD00]">Menú</span>
           <button onClick={() => setOpen(false)}>
@@ -133,19 +119,20 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Contenedor scrollable */}
-        <ul className="flex flex-col px-4 pt-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto">
-          {links
-            .filter((link) => !link.isButton)
-            .map((link) =>
-              link.submenu ? (
-                <li key={link.name}>
-                  <span className="text-[#2E7D32] text-lg font-semibold mb-1 flex items-center gap-2 cursor-pointer">
-                    {link.icon}
-                    {link.name}
-                  </span>
-                  <ul className="ml-6 space-y-2">
-                    {link.submenu?.map((sub) => (
+        <ul className="flex flex-col px-4 pt-6 space-y-4 overflow-y-auto">
+          {links.filter((link) => !link.isButton).map((link) => (
+            <li key={link.name}>
+              {link.submenu ? (
+                <>
+                  <button
+                    className="flex items-center justify-between w-full text-[#2E7D32] text-lg font-semibold"
+                    onClick={() => toggleMobileSubmenu(link.name)}
+                  >
+                    <span className="flex items-center gap-2">{link.icon}{link.name}</span>
+                    <HiChevronDown className={`transition-transform duration-300 ${mobileSubmenuOpen === link.name ? 'rotate-180' : ''}`} />
+                  </button>
+                  <ul className={`ml-6 mt-2 space-y-2 overflow-hidden transition-all duration-300 ${mobileSubmenuOpen === link.name ? 'max-h-96' : 'max-h-0'}`}>
+                    {link.submenu.map((sub) => (
                       <li key={sub.name}>
                         <a
                           href={sub.href}
@@ -153,52 +140,42 @@ const Navbar = () => {
                             handleScroll(e, sub.href);
                             setActiveSubmenu(sub.name);
                           }}
-                          className="relative inline-block text-[#444] hover:text-[#2E7D32] text-base transition-colors duration-200"
+                          className="block text-[#444] hover:text-[#2E7D32] text-base transition-colors duration-200"
                         >
                           {sub.name}
-                          {/* Subrayado animado SOLO bajo el texto */}
-                          <span
-                            className={`absolute left-0 -bottom-1 h-[2px] bg-[#2E7D32] transform origin-left transition-transform duration-300 ${
-                              activeSubmenu === sub.name ? 'scale-x-100' : 'scale-x-0'
-                            }`}
-                            style={{ width: '100%' }}
-                          />
                         </a>
                       </li>
                     ))}
                   </ul>
-                </li>
+                </>
               ) : (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="flex items-center text-[#2E7D32] hover:text-[#f3993e] text-lg font-medium transition-colors duration-200"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.iconMobile ? <span className="mr-3">{link.iconMobile}</span> : link.icon && <span className="mr-3">{link.icon}</span>}
-                    {link.name}
-                  </Link>
-                </li>
-              )
-            )}
-
-          {/* Contact Button */}
-          {links
-            .filter((link) => link.isButton)
-            .map((link) => (
-              <li key={link.name}>
                 <Link
                   to={link.href}
-                  className="flex items-center justify-center bg-[#84BD00] text-white px-4 py-2 rounded-lg shadow-md font-bold transition hover:bg-[#e68932]"
+                  className="flex items-center text-[#2E7D32] hover:text-[#f3993e] text-lg font-medium transition-colors duration-200"
                   onClick={() => setOpen(false)}
                 >
-                  {link.icon && <span className="mr-3">{link.icon}</span>}
+                  {link.iconMobile ? <span className="mr-3">{link.iconMobile}</span> : link.icon && <span className="mr-3">{link.icon}</span>}
                   {link.name}
                 </Link>
-              </li>
-            ))}
+              )}
+            </li>
+          ))}
 
-          {/* WhatsApp */}
+          {/* Contact Button */}
+          {links.filter((link) => link.isButton).map((link) => (
+            <li key={link.name}>
+              <Link
+                to={link.href}
+                className="flex items-center justify-center bg-[#84BD00] text-white px-4 py-2 rounded-lg shadow-md font-bold transition hover:bg-[#e68932]"
+                onClick={() => setOpen(false)}
+              >
+                {link.icon && <span className="mr-3">{link.icon}</span>}
+                {link.name}
+              </Link>
+            </li>
+          ))}
+
+          {/* WhatsApp debajo del Contacto */}
           <li>
             <a
               href="https://wa.me/56969186224"
